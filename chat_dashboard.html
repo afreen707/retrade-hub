@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Dashboard - ReTradeHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    ReTradeHub
+</header>
+
+<nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('post_item') }}">Post Item</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<div class="content">
+    <h1>Your Chats</h1>
+
+    {% if threads %}
+        <ul style="list-style: none; padding: 0;">
+            {% for thread in threads %}
+                <li style="margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                    <strong>{{ thread['item_title'] }}</strong><br>
+                    Chat with: {{ thread['other_username'] }}<br>
+                    <a href="{{ url_for('chat', item_id=thread['item_id'], receiver_id=thread['other_user_id']) }}" 
+                       style="color: #fff; background-color: #2a9d8f; padding: 6px 12px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 5px;">
+                        Open Chat
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no chats yet.</p>
+    {% endif %}
+</div>
+
+<footer>
+    &copy; 2025 ReTradeHub. All rights reserved.
+</footer>
+
+</body>
+</html>
