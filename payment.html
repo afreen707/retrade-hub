@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Make a Payment</h2>
+  <form method="POST" class="bg-white p-4 rounded shadow-sm">
+    <div class="mb-3">
+      <label for="amount" class="form-label">Amount</label>
+      <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+    </div>
+    <div class="mb-3">
+      <label for="method" class="form-label">Payment Method</label>
+      <select name="method" id="method" class="form-select" required>
+        <option value="Credit Card">Credit Card</option>
+        <option value="PayPal">PayPal</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Pay Now</button>
+  </form>
+</div>
+{% endblock %}

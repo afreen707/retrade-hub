@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Item - ReTradeHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>Post a New Item</header>
+
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/profile">Profile</a> |
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <div class="content">
+        <form action="/post_item" method="POST" enctype="multipart/form-data">
+            <label>Title:</label>
+            <input type="text" name="title" required>
+
+            <label>Description:</label>
+            <textarea name="description" required></textarea>
+
+            <label>Price:</label>
+            <input type="number" name="price" required>
+
+            <label>Upload Photo:</label>
+            <input type="file" name="photo" accept="image/*" required>
+
+            <button type="submit">Post Item</button>
+        </form>
+    </div>
+
+</body>
+</html>

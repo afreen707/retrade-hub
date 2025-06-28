@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %}Payment Confirmation{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <h2>✅ Payment Successful!</h2>
+    <p>Thank you for your purchase.</p>
+    <a href="{{ url_for('index') }}" class="btn">Return to Home</a>
+</div>
+
+<style>
+    .confirmation-container {
+        background: #ffffff;
+        padding: 40px;
+        max-width: 500px;
+        margin: 50px auto;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .confirmation-container h2 {
+        color: #2ecc71;
+        margin-bottom: 20px;
+    }
+    .confirmation-container .btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    .confirmation-container .btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}

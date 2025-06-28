@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ReTradeHub - Home</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <header>Welcome to ReTradeHub!</header>
+
+    <nav>
+        <a href="/login">Login</a> | 
+        <a href="/signup">Signup</a> | 
+        <a href="/post_item">Post Item</a> | 
+        <a href="/profile">Profile</a> | 
+        <a href="/logout">Logout</a>       
+    </nav>
+<!-- 🔍 Professional & Full-Width Search Bar -->
+<div style="display: flex; justify-content: center; margin: 20px 0;">
+    <form action="{{ url_for('search') }}" method="get"
+          style="display: flex; flex-direction: column; gap: 15px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 700px; box-sizing: border-box;">
+
+        <!-- Keyword Input -->
+        <input type="text" name="q" placeholder="Search items..."
+               value="{{ request.args.get('q', '') }}"
+               style="padding: 12px 15px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box;">
+
+        <!-- Price Range Inputs Side by Side -->
+        <div style="display: flex; gap: 15px;">
+            <input type="number" name="min_price" placeholder="Min ₹"
+                   value="{{ request.args.get('min_price', '') }}"
+                   style="flex: 1; padding: 12px 15px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px;">
+            
+            <input type="number" name="max_price" placeholder="Max ₹"
+                   value="{{ request.args.get('max_price', '') }}"
+                   style="flex: 1; padding: 12px 15px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px;">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+                style="padding: 12px; background-color: #2a9d8f; color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+            🔍 Search
+        </button>
+    </form>
+</div>
+
+
+    <div class="content">
+        <h2>Items for Sale:</h2>
+
+        {% if items %}
+            <div class="items-list">
+                {% for item in items %}
+                    <div class="item-card">
+
+                        {% if item['photo_filename'] %}
+                            <img src="{{ url_for('static', filename='uploads/' + item['photo_filename']) }}" alt="Item Image" width="200">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='uploads/default.png') }}" alt="No Image" width="200">
+                        {% endif %}
+
+                        <h3>{{ item['title'] }}</h3>
+                        <p>{{ item['description'] }}</p>
+
+                        {% if item['is_closed'] %}
+                            <p><strong>Auction Closed</strong></p>
+                            {% if item['highest_bid'] %}
+                                <p>Sold at: ₹{{ item['highest_bid'] }}</p>
+                            {% endif %}
+                        {% else %}
+                            {% if item['highest_bid'] %}
+                                <p>Current Bid: ₹{{ item['highest_bid'] }}</p>
+                            {% else %}
+                                <p>Starting Price: ₹{{ item['price'] }}</p>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="item-buttons">
+                            <a class="view-button" href="{{ url_for('view_item', item_id=item['id']) }}">View Details</a>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No items yet.</p>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
+
