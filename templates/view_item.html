@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ item['title'] }} - ReTradeHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    ReTradeHub
+</header>
+
+<nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('post_item') }}">Post Item</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<div class="content">
+
+<div class="item-card">
+    <h1>{{ item['title'] }}</h1>
+    
+    {% if item['auction_end_time'] %}
+        <p><strong>Auction Ends At:</strong> 
+            {{ item['auction_end_time'] | datetimeformat('%d %b %Y, %I:%M %p') }}
+        </p>
+    {% endif %}
+    
+    <img src="{{ url_for('static', filename='uploads/' + item['photo_filename']) }}" 
+         alt="{{ item['title'] }}" 
+         style="width: 100%; height: auto; border-radius: 12px; margin-top: 15px;">
+    
+    <p style="margin-top: 15px;"><strong>Description:</strong> {{ item['description'] }}</p>
+    
+    <p class="price"><strong>Starting Price:</strong> ₹{{ item['price'] }}</p>
+    
+    <p class="price"><strong>Current Highest Bid:</strong> 
+        ₹{{ item['highest_bid'] or item['price'] }}
+    </p>{% if item['is_closed'] %}
+    {% if bids %}
+        <p style="color: green;"><strong>Sold Out</strong></p>
+        <p><strong>Winning Bidder:</strong> {{ highest_bid_username }}</p>
+
+            
+            {% if session.get('user_id') == highest_bid_user_id %}
+                {% if not payment_done %}
+                    <div style="margin-top: 20px;">
+                        <form action="{{ url_for('payment', item_id=item['id']) }}" method="GET">
+                            <button type="submit" style="padding: 12px; background-color: #e76f51; color: white; border: none; border-radius: 8px;">
+                                Pay Now
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <p style="color: green;"><strong>Payment Completed</strong></p>
+                {% endif %}
+            {% endif %}
+
+        {% else %}
+            <p style="color: red;"><strong>Auction Closed</strong></p>
+        {% endif %}
+
+        {% if session.get('user_id') == highest_bid_user_id %}
+            <div style="margin-top: 20px;">
+                <a href="{{ url_for('chat', item_id=item['id'], receiver_id=item['user_id']) }}">Chat with Seller</a>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if session.get('user_id') and session.get('user_id') != item['user_id'] %}
+            <div style="margin-top: 20px;">
+                <a href="{{ url_for('chat', item_id=item['id'], receiver_id=item['user_id']) }}">Chat with Seller</a>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% if not item['is_closed'] %}
+<div style="margin-top: 30px;">
+    <h2>Place a Bid</h2>
+
+    <form action="{{ url_for('view_item', item_id=item['id']) }}" method="POST">
+        <input type="number" 
+               name="bid_amount" 
+               placeholder="Enter your bid amount" 
+               required 
+               min="{{ (item['highest_bid'] if item['highest_bid'] else item['price']) + 1 }}" 
+               style="padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;">
+        
+        <button type="submit" 
+                style="width: 100%; background-color: #2a9d8f; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer;">
+            Place Bid
+        </button>
+    </form>
+</div>
+{% endif %}
+
+{% if bids %}
+<div style="margin-top: 40px;">
+    <h2>Bid History</h2>
+    <ul style="list-style: none; padding: 0;">
+        {% for bid in bids %}
+            <li style="margin-bottom: 10px;">
+                <p>₹{{ bid['amount'] }} by {{ bid['bidder_name'] }} on {{ bid['bid_time'] }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<!-- Chat with Seller Section -->
+{% if (not item['is_closed'] and session.get('user_id') != item['user_id']) or (item['is_closed'] and session.get('user_id') == highest_bid_user_id) %}
+<div style="margin-top: 40px;">
+    <h2>Chat with Seller</h2>
+
+    <form action="{{ url_for('view_item', item_id=item['id']) }}" method="POST">
+        <textarea name="message" 
+                  placeholder="Type your message..." 
+                  required 
+                  rows="3" 
+                  style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;"></textarea>
+        
+        <button type="submit" 
+                style="margin-top: 10px; padding: 10px 20px; background-color: #264653; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            Send Message
+        </button>
+    </form>
+
+    {% if chats %}
+    <div style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px;">
+        {% for chat in chats %}
+            <div style="margin-bottom: 12px;">
+                <strong>{{ chat['sender_name'] }}:</strong> {{ chat['message'] }}<br>
+                <small style="color: gray;">{{ chat['timestamp'] }}</small>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+</div>
+
+<footer>
+    &copy; 2025 ReTradeHub. All rights reserved.
+</footer>
+
+</body>
+</html>

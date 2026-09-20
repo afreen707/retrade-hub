@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results - ReTradeHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJrZ5nJt2h8W1NxKtiDgH3yT2h2iBtPQTjZ3c3KCdZw6k6S2w2A7M4c1k1oy" crossorigin="anonymous">
+</head>
+<body>
+
+<header class="bg-primary text-white text-center py-3">
+    <h1>ReTradeHub</h1>
+    <h4>Search Results for "{{ query }}"</h4>
+</header>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+        <a class="navbar-nav ms-auto" href="{{ url_for('post_item') }}">Post Item</a>
+        <a class="navbar-nav" href="{{ url_for('profile') }}">Profile</a>
+        <a class="navbar-nav" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    {% if items %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for item in items %}
+                <div class="col">
+                    <div class="card">
+                        {% if item['photo_filename'] %}
+                            <img src="{{ url_for('static', filename='uploads/' + item['photo_filename']) }}" class="card-img-top" alt="{{ item['title'] }}">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='uploads/default.png') }}" class="card-img-top" alt="default image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item['title'] }}</h5>
+                            <p class="card-text">{{ item['description'] }}</p>
+                            <p class="card-text"><strong>₹{{ item['price'] }}</strong></p>
+                            <a href="{{ url_for('view_item', item_id=item['id']) }}" class="btn btn-primary w-100">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76d2CDAfwr3l7Ao7xgpcFlYlTHf0Z0gkfn58f9Kh6X1l+g5VbzF+I67G2JkzSTi" crossorigin="anonymous"></script>
+</body>
+</html>
+

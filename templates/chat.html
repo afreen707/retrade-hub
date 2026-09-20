@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat - ReTradeHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .chat-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            background-color: #f9f9f9;
+        }
+
+        .chat-msg {
+            margin-bottom: 10px;
+        }
+
+        .chat-msg.incoming {
+            text-align: left;
+        }
+
+        .chat-msg.outgoing {
+            text-align: right;
+        }
+
+        .chat-msg span {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 20px;
+            background-color: #e0e0e0;
+        }
+
+        .chat-msg.outgoing span {
+            background-color: #a8dadc;
+        }
+
+        .chat-form {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .chat-form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .chat-form button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    ReTradeHub
+</header>
+
+<nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    <a href="{{ url_for('post_item') }}">Post Item</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<div class="chat-container">
+    <h2>Chat</h2>
+
+    {% for msg in messages %}
+        <div class="chat-msg {% if msg['sender_id'] == session['user_id'] %}outgoing{% else %}incoming{% endif %}">
+            <span>{{ msg['message'] }}</span>
+        </div>
+    {% endfor %}
+
+    <form action="{{ url_for('chat', item_id=item_id, receiver_id=receiver_id) }}" method="POST" class="chat-form">
+        <input type="text" name="message" placeholder="Type your message..." required>
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+</body>
+</html>
